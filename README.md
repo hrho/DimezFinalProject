@@ -1,2 +1,4 @@
 # DimezFinalProject
-cse30332 final project
+
+Chris Rho (hrho)
+Joseph Curci (jcurci)
