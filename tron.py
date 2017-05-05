@@ -212,7 +212,7 @@ class player(pygame.sprite.Sprite):
         if key == 'L':
         #    print('moving left')
             p1Direction = 'L'
-            dx = 1
+            dx = -1
             dy = 0
         elif key == 'R':
          #   print('moving right')
@@ -223,7 +223,7 @@ class player(pygame.sprite.Sprite):
           #  print('moving up')
             p1Direction = 'U'
             dx = 0
-            dy = 1
+            dy = -1
         elif key == 'D':
           #  print('moving down')
             p1Direction = 'D'
@@ -302,7 +302,7 @@ class player(pygame.sprite.Sprite):
         if key == 'L':
         #    print('moving left')
             p2Direction = 'L'
-            dx = 1
+            dx = -1
             dy = 0
         elif key == 'R':
          #   print('moving right')
@@ -313,7 +313,7 @@ class player(pygame.sprite.Sprite):
           #  print('moving up')
             p2Direction = 'U'
             dx = 0
-            dy = 1
+            dy = -1
         elif key == 'D':
           #  print('moving down')
             p2Direction = 'D'
