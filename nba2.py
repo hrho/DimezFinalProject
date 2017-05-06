@@ -32,7 +32,7 @@ class GameSpace:
 		self.pressedKey = 0
 		self.ready = 0
 		self.quit = 0
-		self.acked = 0
+		self.counted = 0
 		self.mode = None
 		# waiting bg screen
 		tempbg = backgrounds[random.randint(0,1)]
@@ -76,7 +76,7 @@ class GameSpace:
 			self.tickNum += 1
 			for laser in self.player2.lasers:
 				laser.tick()
-			if self.acked == 1 and self.tickNum%3 == 0:
+			if self.counted == 1 and self.tickNum%3 == 0:
 				laserListx = []
 				laserListy = []
 				laserListxm = []
@@ -88,7 +88,7 @@ class GameSpace:
 					laserListxm.append(laser.xm)
 					laserListym.append(laser.ym)
 				self.write(zlib.compress(pickle.dumps([self.player2.mx, self.player2.my, pickle.dumps(laserListx), pickle.dumps(laserListy), pickle.dumps(laserListxm), pickle.dumps(laserListym)])))
-			self.acked = 1
+			self.counted = 1
 			#display game object
 			self.screen.blit(self.bg, (0,0))
 			self.screen.blit(self.p2body.image, self.p2body.rect)
@@ -121,8 +121,6 @@ class GameSpace:
 			if self.score1 > 25 or self.score2 > 25:
 				self.gameOver = 1
 		else:
-			# watch
-			randback = random.randint(1,4)
 			self.screen.blit(self.bg, (0, 0))
 			lt = pygame.font.Font('freesansbold.ttf', 50)
 			TextS = lt.render("Waiting for P1...", True, (255, 255, 255))
