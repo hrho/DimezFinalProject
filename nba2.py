@@ -1,4 +1,4 @@
-from modes import backgrounds, chicago, jersey
+from teams import backgrounds, chicago, jersey
 
 import sys
 import pygame
@@ -33,7 +33,7 @@ class GameSpace:
 		self.ready = 0
 		self.quit = 0
 		self.counted = 0
-		self.mode = None
+		self.team = None
 		# waiting bg screen
 		tempbg = backgrounds[random.randint(0,1)]
 		self.bg = pygame.image.load("images/" + tempbg['background_image'])
@@ -50,8 +50,8 @@ class GameSpace:
 		self.endGame = GameOver(self)
 
 		# background image
-		self.bg = pygame.image.load("images/" + self.mode['background_image'])
-		self.bg = pygame.transform.scale(self.bg, self.mode['background_scale'])
+		self.bg = pygame.image.load("images/" + self.team['background_image'])
+		self.bg = pygame.transform.scale(self.bg, self.team['background_scale'])
 	def game_loop(self):
 		if self.gameOver == 1:
 			if self.score1 > 25:
@@ -165,23 +165,23 @@ class Dropshots(pygame.sprite.Sprite):
 	def __init__(self, x, y, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['ball_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['ball_image'])
 		self.rect = self.image.get_rect()
 		self.rect.center = [x, y]
 class Player2Prop(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['blocker_body'])
+		self.image = pygame.image.load("images/" + self.gs.team['blocker_body'])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['sb_location']
+		self.rect.center = self.gs.team['sb_location']
 # Player 1
 class Player1(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['player_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['player_image'])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['player_start']
+		self.rect.center = self.gs.team['player_start']
 		self.Moving = "N"
 		self.box = Box(self.rect.center,self.gs)
 	def tick(self):
@@ -191,10 +191,10 @@ class Box(pygame.sprite.Sprite):
 	def __init__(self, center, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['box_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['box_image'])
 		self.rect = self.image.get_rect()
-		self.x = center[0] + self.gs.mode['box_offset'][0]
-		self.y = center[1] + self.gs.mode['box_offset'][1]
+		self.x = center[0] + self.gs.team['box_offset'][0]
+		self.y = center[1] + self.gs.team['box_offset'][1]
 		self.rect.center = [self.x, self.y]
 
 # the swatter
@@ -204,9 +204,9 @@ class Player2(pygame.sprite.Sprite):
 		self.realx = 1
 		self.realy = 1
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode["hand_image"])
+		self.image = pygame.image.load("images/" + self.gs.team["hand_image"])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['hand_location']
+		self.rect.center = self.gs.team['hand_location']
 		self.lasers = []
 		self.angle = 0
 		self.orig_image = self.image
@@ -231,7 +231,7 @@ class Player2(pygame.sprite.Sprite):
 			self.fired = 1
 		else:
 		# player 2 rotates
-			self.angle = math.atan2(self.my-self.rect.center[1], self.mx - self.rect.center[0])*-180/math.pi + 211.5 - self.gs.mode['angle_offset']
+			self.angle = math.atan2(self.my-self.rect.center[1], self.mx - self.rect.center[0])*-180/math.pi + 211.5 - self.gs.team['angle_offset']
 			self.image = pygame.transform.rotate(self.orig_image, self.angle)
 			self.rect = self.image.get_rect(center = self.rect.center)
 			self.toFire = 0
@@ -240,11 +240,11 @@ class Laser(pygame.sprite.Sprite):
 	def __init__(self, xc=320, yc=240, xm=1, ym=1, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		xc = xc + xm*self.gs.mode['bullet_offset']
-		yc = yc + ym*self.gs.mode['bullet_offset']
+		xc = xc + xm*self.gs.team['bullet_offset']
+		yc = yc + ym*self.gs.team['bullet_offset']
 		self.xm = xm*10
 		self.ym = ym*10
-		self.image = pygame.image.load("images/" + self.gs.mode['bullet_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['bullet_image'])
 		self.rect = self.image.get_rect()
 		self.rect.center = [xc, yc]
 	def tick(self):
@@ -265,11 +265,11 @@ class ClientConnection(Protocol):
 		self.client = client
 	def dataReceived(self, data):
 		if data == 'chicago':
-			self.client.mode = chicago
+			self.client.team = chicago
 			self.client.setup()
 			self.client.ready = 1
 		elif data == 'jersey':
-			self.client.mode = jersey
+			self.client.team = jersey
 			self.client.setup()
 			self.client.ready = 1
 		else:

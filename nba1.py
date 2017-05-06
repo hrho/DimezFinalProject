@@ -1,4 +1,4 @@
-from modes import chicago, jersey
+from teams import chicago, jersey
 
 import sys
 import pygame
@@ -34,7 +34,7 @@ class GameSpace:
 		self.connected = False
 		self.quit = 0
 		self.counted = False
-		self.mode = None
+		self.team = None
 		self.waitString = "Waiting for player 2 to connect brah"
 		self.gameOver = 0
 	def setup(self):
@@ -51,8 +51,8 @@ class GameSpace:
 #		self.bg = pygame.Surface(screen.get_size())
 #		self.bg = bg.convert()
 #		bg.fill((0,0,0))
-		self.bg = pygame.image.load("images/" + self.mode['background_image'])
-		self.bg = pygame.transform.scale(self.bg, self.mode['background_scale'])
+		self.bg = pygame.image.load("images/" + self.team['background_image'])
+		self.bg = pygame.transform.scale(self.bg, self.team['background_scale'])
 
 	def game_loop(self):
 		if self.gameOver == 1:
@@ -62,7 +62,7 @@ class GameSpace:
 			else:
 				self.endGame.display(2)
 			pygame.display.flip()
-		elif self.connected and self.mode != None:
+		elif self.connected and self.team != None:
 			self.counter+=1
 			for bullet in self.player2.lasers:
 				for ball in self.shot.drops:
@@ -75,7 +75,7 @@ class GameSpace:
 						self.scoreCount += 1
 						break
 			for ball in self.shot.drops:
-				if collision(ball.rect.center, [self.player1.rect.center[0] + self.mode['catcher_offset'][0], self.player1.rect.center[1] + self.mode['catcher_offset'][1]]):
+				if collision(ball.rect.center, [self.player1.rect.center[0] + self.team['catcher_offset'][0], self.player1.rect.center[1] + self.team['catcher_offset'][1]]):
 					self.shot.drops.remove(ball)
 					self.score1 += 1
 			# frame rate with tick
@@ -150,7 +150,7 @@ class GameSpace:
 class Menu(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		self.gs = gs
-		# choosing modes
+		# choosing teams
 		self.chicagoButton = pygame.image.load("images/chiBulls.png")
 		self.jerseyButton = pygame.image.load("images/bklNets.png")
 
@@ -191,14 +191,14 @@ class Menu(pygame.sprite.Sprite):
 				if dist(mx, my, self.chicagoRect.centerx, self.chicagoRect.centery) < 25:
 					self.circleCenter = [self.chicagoRect.centerx, self.chicagoRect.centery]
 					self.color(148, 0, 211)
-					self.gs.mode = chicago
+					self.gs.team = chicago
 					self.gs.setup()
 					if self.gs.connected:
 						self.gs.write('chicago')
 				elif dist(mx, my, self.jerseyRect.centerx, self.jerseyRect.centery) < 25:
 					self.circleCenter = [self.jerseyRect.centerx, self.jerseyRect.centery]
 					self.color = (0, 255, 0)
-					self.gs.mode = jersey
+					self.gs.team = jersey
 					self.gs.setup()
 					if self.gs.connected:
 						self.gs.write('jersey')
@@ -240,24 +240,24 @@ class Dropshots(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['ball_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['ball_image'])
 		self.rect = self.image.get_rect()
 		self.x = random.randint(30, 610)
 		self.rect.center = [self.x, -20]
 class Player2Prop(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['blocker_body'])
+		self.image = pygame.image.load("images/" + self.gs.team['blocker_body'])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['sb_location']
+		self.rect.center = self.gs.team['sb_location']
 # Player 1
 class Player1(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['player_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['player_image'])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['player_start']
+		self.rect.center = self.gs.team['player_start']
 		self.Moving = "N"
 		self.box = Box(self.rect.center, self.gs)
 	def tick(self):
@@ -268,22 +268,22 @@ class Player1(pygame.sprite.Sprite):
 		elif self.Moving == "L":
 			self.rect = self.rect.move([-5, 0])
 			self.box.rect = self.box.rect.move([-5, 0])
-		if self.rect.center[0] < self.gs.mode['max_player_left']:
-			self.rect.center = [self.gs.mode['max_player_left'], self.rect.center[1]]
-			self.box.rect.center = [self.rect.center[0] + self.gs.mode['box_offset'][0], self.rect.center[1] + self.gs.mode['box_offset'][1]]
-		elif self.rect.center[0] > self.gs.mode['max_player_right']:
-			self.rect.center = [self.gs.mode['max_player_right'], self.rect.center[1]]
-			self.box.rect.center = [self.rect.center[0] + self.gs.mode['box_offset'][0], self.rect.center[1] + self.gs.mode['box_offset'][1]]
+		if self.rect.center[0] < self.gs.team['max_player_left']:
+			self.rect.center = [self.gs.team['max_player_left'], self.rect.center[1]]
+			self.box.rect.center = [self.rect.center[0] + self.gs.team['box_offset'][0], self.rect.center[1] + self.gs.team['box_offset'][1]]
+		elif self.rect.center[0] > self.gs.team['max_player_right']:
+			self.rect.center = [self.gs.team['max_player_right'], self.rect.center[1]]
+			self.box.rect.center = [self.rect.center[0] + self.gs.team['box_offset'][0], self.rect.center[1] + self.gs.team['box_offset'][1]]
 
 # catching balls lol
 class Box(pygame.sprite.Sprite):
 	def __init__(self, center, gs = None):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['box_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['box_image'])
 		self.rect = self.image.get_rect()
-		self.x = center[0] + self.gs.mode['box_offset'][0]
-		self.y = center[1] + self.gs.mode['box_offset'][1]
+		self.x = center[0] + self.gs.team['box_offset'][0]
+		self.y = center[1] + self.gs.team['box_offset'][1]
 		self.rect.center = [self.x, self.y]
 
 # the swatter
@@ -293,9 +293,9 @@ class Player2(pygame.sprite.Sprite):
 		self.mx = 1
 		self.my = 1
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode["hand_image"])
+		self.image = pygame.image.load("images/" + self.gs.team["hand_image"])
 		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.mode['hand_location']
+		self.rect.center = self.gs.team['hand_location']
 		self.lasers = []
 		self.angle = 0
 		self.orig_image = self.image
@@ -306,7 +306,7 @@ class Player2(pygame.sprite.Sprite):
 			elif ball.rect.center[1] < -20 or ball.rect.center[1] > 500:
 				self.lasers.remove(ball)
 		# player 2 rotates
-		self.angle = math.atan2(self.my-self.rect.center[1], self.mx - self.rect.center[0])*-180/math.pi + 211.5 - self.gs.mode['angle_offset']
+		self.angle = math.atan2(self.my-self.rect.center[1], self.mx - self.rect.center[0])*-180/math.pi + 211.5 - self.gs.team['angle_offset']
 		self.image = pygame.transform.rotate(self.orig_image, self.angle)
 		self.rect = self.image.get_rect(center = self.rect.center)
 
@@ -316,7 +316,7 @@ class Laser(pygame.sprite.Sprite):
 		self.xm = xm
 		self.ym = ym
 		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.mode['bullet_image'])
+		self.image = pygame.image.load("images/" + self.gs.team['bullet_image'])
 		self.rect = self.image.get_rect()
 		self.rect.center = [x,y]
 	def tick(self):
@@ -340,8 +340,8 @@ class ServerConnection(Protocol):
 		if data == 'player 2 connected':
 			self.client.connected = True
 			self.client.waitString = "player 2 connected"
-			if self.client.mode != None:
-				self.transport.write(self.client.mode['name'])
+			if self.client.team != None:
+				self.transport.write(self.client.team['name'])
 		else:
 			self.client.player2.lasers = []
 			data = pickle.loads(zlib.decompress(data))
