@@ -46,7 +46,6 @@ class GameSpace:
 		self.shot = Shot(self)
 		self.player1 = Player1(self)
 		self.player2 = Player2(self)
-		self.p2body = Player2Prop(self)
 		self.endGame = GameOver(self)
 
 		# background image
@@ -54,7 +53,7 @@ class GameSpace:
 		self.bg = pygame.transform.scale(self.bg, self.team['background_scale'])
 	def game_loop(self):
 		if self.gameOver == 1:
-			if self.score1 > 25:
+			if self.score1 > 15:
 				self.endGame.display(1)
 			else:
 				self.endGame.display(2)
@@ -91,7 +90,6 @@ class GameSpace:
 			self.counted = 1
 			#display game object
 			self.screen.blit(self.bg, (0,0))
-			self.screen.blit(self.p2body.image, self.p2body.rect)
 			self.screen.blit(self.player1.image, self.player1.rect)
 			# lasers
 			for laser in self.player2.lasers:
@@ -118,7 +116,7 @@ class GameSpace:
 				self.screen.blit(ball.image, ball.rect)
 			pygame.display.flip()
 			# end of kobe's game
-			if self.score1 > 25 or self.score2 > 25:
+			if self.score1 > 15 or self.score2 > 15:
 				self.gameOver = 1
 		else:
 			self.screen.blit(self.bg, (0, 0))
@@ -168,12 +166,6 @@ class Dropshots(pygame.sprite.Sprite):
 		self.image = pygame.image.load("images/" + self.gs.team['ball_image'])
 		self.rect = self.image.get_rect()
 		self.rect.center = [x, y]
-class Player2Prop(pygame.sprite.Sprite):
-	def __init__(self, gs = None):
-		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.team['blocker_body'])
-		self.rect = self.image.get_rect()
-		self.rect.center = self.gs.team['sb_location']
 # Player 1
 class Player1(pygame.sprite.Sprite):
 	def __init__(self, gs = None):
