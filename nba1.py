@@ -52,6 +52,8 @@ class GameSpace:
 #		bg.fill((0,0,0))
 		self.bg = pygame.image.load("images/" + self.team['background_image'])
 		self.bg = pygame.transform.scale(self.bg, self.team['background_scale'])
+       #         self.allsprites = pygame.sprite.RenderPlain((self.player1,self.player2))
+        #        self.lazers = pygame.sprite.Group()
 
 	def game_loop(self):
 		if self.gameOver == 1:
@@ -63,6 +65,7 @@ class GameSpace:
 			pygame.display.flip()
 		elif self.connected and self.team != None:
 			self.counter+=1
+                        self.screen.blit(self.bg,(0,0))
 			for bullet in self.player2.lasers:
 				for ball in self.shot.drops:
 					if collision(ball.rect.center, bullet.rect.center):
@@ -107,7 +110,9 @@ class GameSpace:
 					shoty.append(drop.rect.center[1])
 				self.write(zlib.compress(pickle.dumps([self.player1.rect.center, self.player1.box.rect.center, self.score1, pickle.dumps(shotx), pickle.dumps(shoty), self.score2])))
 			self.counted = True
+
 			#display game object
+                        self.bg.fill((0,0,0))
 			self.screen.blit(self.bg, (0,0))
 			self.screen.blit(self.player1.image, self.player1.rect)
 			# lasers
@@ -137,6 +142,7 @@ class GameSpace:
 			# end of kobe's game
 			if self.score1 > 15 or self.score2 > 15:
 				self.gameOver = 1
+                        pygame.display.update()
 		else: # waiting to connect to p2
 			self.menu.display()
 			pygame.display.flip()
@@ -330,6 +336,7 @@ class ServerConnection(Protocol):
 		self.client = client
 	def dataReceived(self, data):
 		if data == 'player 2 connected':
+                        print("player 2 connected")
 			self.client.connected = True
 			self.client.waitString = "player 2 connected"
 			if self.client.team != None:

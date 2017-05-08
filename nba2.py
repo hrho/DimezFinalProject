@@ -59,6 +59,7 @@ class GameSpace:
 				self.endGame.display(2)
 			pygame.display.flip()
 		elif self.ready == 1:
+                        self.screen.blit(self.bg, (0,0))
 			# frame rate with tick
 			self.clock.tick(60)
 			# user inputs for slick controls
@@ -89,6 +90,7 @@ class GameSpace:
 				self.write(zlib.compress(pickle.dumps([self.player2.mx, self.player2.my, pickle.dumps(laserListx), pickle.dumps(laserListy), pickle.dumps(laserListxm), pickle.dumps(laserListym)])))
 			self.counted = 1
 			#display game object
+                        self.bg.fill((0,0,0))
 			self.screen.blit(self.bg, (0,0))
 			self.screen.blit(self.player1.image, self.player1.rect)
 			# lasers
@@ -118,6 +120,7 @@ class GameSpace:
 			# end of kobe's game
 			if self.score1 > 15 or self.score2 > 15:
 				self.gameOver = 1
+                        pygame.display.update()
 		else:
 			self.screen.blit(self.bg, (0, 0))
 			lt = pygame.font.Font('freesansbold.ttf', 50)
@@ -256,6 +259,7 @@ class ClientConnection(Protocol):
 	def __init__(self, client):
 		self.client = client
 	def dataReceived(self, data):
+          #      print("Got data from P1: ", data)
 		if data == 'chicago':
 			self.client.team = chicago
 			self.client.setup()
