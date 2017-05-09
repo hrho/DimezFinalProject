@@ -175,27 +175,13 @@ class Player1(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
 		self.image = pygame.image.load("images/" + self.gs.team['player_image'])
-		self.gs = gs
-		self.image = pygame.image.load("images/" + self.gs.team['box_image'])
-		self.rect = self.image.get_rect()
-		self.x = center[0] + self.gs.team['box_offset'][0]
-		self.y = center[1] + self.gs.team['box_offset'][1]
-		self.rect.center = [self.x, self.y]
-
-# the swatter
-class Player2(pygame.sprite.Sprite):
-	def __init__(self, gs = None):
-		pygame.sprite.Sprite.__init__(self)
-		self.realx = 1
-		self.realy = 1
-		self.gs = gs
-		self.image = pygame.image.load("imag
 		self.rect = self.image.get_rect()
 		self.rect.center = self.gs.team['player_start']
-		self.Moving = "N"
-		self.box = Box(self.rect.center,self.gs)
-	def tick(self):
-		pass
+                self.Moving = "N"
+                self.box = Box(self.rect.center, self.gs)
+        def tick(self):
+            pass
+
 # catching balls lol
 class Box(pygame.sprite.Sprite):
 	def __init__(self, center, gs = None):
@@ -223,7 +209,7 @@ class Player2(pygame.sprite.Sprite):
 		self.toFire = 0
 		self.fired = 0
 	def tick(self):
-		self.mx, self.my = pygame.mouse.ge t_pos()
+		self.mx, self.my = pygame.mouse.get_pos()
 		for ball in self.lasers:
 			if ball.rect.center[0] < -20 or ball.rect.center[0] > 660:
 				self.lasers.remove(ball)
@@ -287,7 +273,7 @@ class ClientConnection(Protocol):
                         self.client.setup()
                         self.client.ready = 1
                 elif data == 'warriors':
-                        self.client.team = wizards
+                        self.client.team = warriors
                         self.client.setup()
                         self.client.ready = 1
 		else:
