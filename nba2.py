@@ -1,4 +1,4 @@
-from teams import backgrounds, chicago, jersey
+from teams import backgrounds, chicago, jersey, warriors,wizards
 
 import sys
 import pygame
@@ -14,7 +14,7 @@ from twisted.internet.protocol import ClientFactory
 from twisted.internet.protocol import Protocol
 from twisted.internet import reactor
 from twisted.internet.defer import DeferredQueue
-from twisted.internet.task import LoopingCall
+from twisted.internet.task import LoopingCall 
 
 SERVER_HOST = 'ash.campus.nd.edu'
 SERVER_PORT = 40053
@@ -175,6 +175,21 @@ class Player1(pygame.sprite.Sprite):
 		pygame.sprite.Sprite.__init__(self)
 		self.gs = gs
 		self.image = pygame.image.load("images/" + self.gs.team['player_image'])
+		self.gs = gs
+		self.image = pygame.image.load("images/" + self.gs.team['box_image'])
+		self.rect = self.image.get_rect()
+		self.x = center[0] + self.gs.team['box_offset'][0]
+		self.y = center[1] + self.gs.team['box_offset'][1]
+		self.rect.center = [self.x, self.y]
+
+# the swatter
+class Player2(pygame.sprite.Sprite):
+	def __init__(self, gs = None):
+		pygame.sprite.Sprite.__init__(self)
+		self.realx = 1
+		self.realy = 1
+		self.gs = gs
+		self.image = pygame.image.load("imag
 		self.rect = self.image.get_rect()
 		self.rect.center = self.gs.team['player_start']
 		self.Moving = "N"
@@ -208,7 +223,7 @@ class Player2(pygame.sprite.Sprite):
 		self.toFire = 0
 		self.fired = 0
 	def tick(self):
-		self.mx, self.my = pygame.mouse.get_pos()
+		self.mx, self.my = pygame.mouse.ge t_pos()
 		for ball in self.lasers:
 			if ball.rect.center[0] < -20 or ball.rect.center[0] > 660:
 				self.lasers.remove(ball)
@@ -259,7 +274,6 @@ class ClientConnection(Protocol):
 	def __init__(self, client):
 		self.client = client
 	def dataReceived(self, data):
-          #      print("Got data from P1: ", data)
 		if data == 'chicago':
 			self.client.team = chicago
 			self.client.setup()
@@ -268,6 +282,14 @@ class ClientConnection(Protocol):
 			self.client.team = jersey
 			self.client.setup()
 			self.client.ready = 1
+                elif data == 'wizards':
+                        self.client.team = wizards
+                        self.client.setup()
+                        self.client.ready = 1
+                elif data == 'warriors':
+                        self.client.team = wizards
+                        self.client.setup()
+                        self.client.ready = 1
 		else:
 			data = pickle.loads(zlib.decompress(data))
 			# p1 spot
