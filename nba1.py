@@ -1,4 +1,4 @@
-from teams import chicago, jersey, wizards, warriors
+from teams import chicago, jersey
 
 import sys
 import pygame
@@ -37,8 +37,7 @@ class GameSpace:
 		self.team = None
 		self.waitString = "Waiting for player 2 to connect brah"
 		self.gameOver = 0
-
-        def setup(self):
+	def setup(self):
 		self.score1 = 0
 		self.score2 = 0
 		self.scoreCount = 0
@@ -48,16 +47,21 @@ class GameSpace:
 		self.endGame = GameOver(self)
 
 		# background image
+#		self.bg = pygame.Surface(screen.get_size())
+#		self.bg = bg.convert()
+#		bg.fill((0,0,0))
 		self.bg = pygame.image.load("images/" + self.team['background_image'])
 		self.bg = pygame.transform.scale(self.bg, self.team['background_scale'])
+       #         self.allsprites = pygame.sprite.RenderPlain((self.player1,self.player2))
+        #        self.lazers = pygame.sprite.Group()
 
 	def game_loop(self):
 		if self.gameOver == 1:
 			self.write(zlib.compress(pickle.dumps([self.player1.rect.center, self.player1.box.rect.center, self.score1, pickle.dumps([]), pickle.dumps([]), self.score2])))
-			if self.score1 > 15:
+			if self.score1 > 25:
 				self.endGame.display(1)
 			else:
-                            self.endGame.display(2)
+				self.endGame.display(2)
 			pygame.display.flip()
 		elif self.connected and self.team != None:
 			self.counter+=1
@@ -153,19 +157,12 @@ class Menu(pygame.sprite.Sprite):
 		# choosing teams
 		self.chicagoButton = pygame.image.load("images/chiBulls.png")
 		self.jerseyButton = pygame.image.load("images/bklNets.png")
-                self.warButton = pygame.image.load("images/warriors.png")
-                self.wizButton = pygame.image.load("images/wizards.png")
 
 		self.chicagoRect = self.chicagoButton.get_rect()
 		self.jerseyRect = self.jerseyButton.get_rect()
-                self.warRect = self.warButton.get_rect()
-                self.wizRect = self.wizButton.get_rect()
 
 		self.chicagoRect.center = [200, 300]
 		self.jerseyRect.center = [400, 300]
-                self.warRect.center = [200,150]
-                self.wizRect.center = [400,150]
-
 		self.circleCenter = None
 	def display(self):
 		mx, my = pygame.mouse.get_pos()
@@ -183,19 +180,13 @@ class Menu(pygame.sprite.Sprite):
 		# highlight button
 		if dist(mx, my, self.chicagoRect.centerx, self.chicagoRect.centery)<25:
 			pygame.draw.circle(self.gs.screen, (255, 0, 0), [self.chicagoRect.centerx, self.chicagoRect.centery], 50, 0)
-                elif dist(mx, my, self.wizRect.centerx, self.wizRect.centery)<25:
-                        pygame.draw.circle(self.gs.screen, (255,0,0), [self.wizRect.centerx, self.wizRect.centery], 50, 0)
 		elif dist(mx, my, self.jerseyRect.centerx, self.jerseyRect.centery)<25:
 			pygame.draw.circle(self.gs.screen, (255, 0, 0), [self.jerseyRect.centerx, self.jerseyRect.centery], 50, 0)
-                elif dist(mx,my,self.warRect.centerx, self.warRect.centery)<25:
-                        pygame.draw.circle(self.gs.screen, (255,0,0), [self.warRect.centerx, self.warRect.centery],50,0)
-                elif self.circleCenter != None:
+		elif self.circleCenter != None:
 			pygame.draw.circle(self.gs.screen, self.color, self.circleCenter, 50, 0)
 		#display button
 		self.gs.screen.blit(self.chicagoButton, self.chicagoRect)
 		self.gs.screen.blit(self.jerseyButton, self.jerseyRect)
-                self.gs.screen.blit(self.warButton, self.warRect)
-                self.gs.screen.blit(self.wizButton, self.wizRect)
 		# user click check
 		for event in pygame.event.get():
 			if event.type == pygame.QUIT:
@@ -203,37 +194,18 @@ class Menu(pygame.sprite.Sprite):
 			elif event.type == pygame.MOUSEBUTTONUP:
 				if dist(mx, my, self.chicagoRect.centerx, self.chicagoRect.centery) < 25:
 					self.circleCenter = [self.chicagoRect.centerx, self.chicagoRect.centery]
-					self.color = (255,0,0 )
+					self.color(148, 0, 211)
 					self.gs.team = chicago
 					self.gs.setup()
 					if self.gs.connected:
 						self.gs.write('chicago')
 				elif dist(mx, my, self.jerseyRect.centerx, self.jerseyRect.centery) < 25:
 					self.circleCenter = [self.jerseyRect.centerx, self.jerseyRect.centery]
-					self.color = (255, 255, 255)
+					self.color = (0, 255, 0)
 					self.gs.team = jersey
 					self.gs.setup()
 					if self.gs.connected:
 						self.gs.write('jersey')
-
-				elif dist(mx, my, self.wizRect.centerx, self.wizRect.centery) < 25:
-					self.circleCenter = [self.wizRect.centerx, self.wizRect.centery]
-					self.color = (255, 0, 0)
-                                        try:
-                                            self.gs.team = wizards
-                                        except Exception as err:
-                                            print err
-                                        self.gs.setup()
-					if self.gs.connected:
-						self.gs.write('wizards')
-
-                                elif dist(mx, my, self.warRect.centerx, self.warRect.centery) < 25:
-                                        self.circleCenter = [self.warRect.centerx, self.warRect.centery]
-                                        self.color = (255, 255, 0)
-                                        self.gs.team = warriors
-                                        self.gs.setup()
-                                        if self.gs.connected:
-                                                self.gs.write('warriors')
 
 # gameover boyy
 class GameOver(pygame.sprite.Sprite):
@@ -398,7 +370,6 @@ class ServerConnectionFactory(Factory):
 		self.client.write = proto.write
 		self.client.quit = proto.quit
 		return proto
-
 if __name__ == '__main__':
 	gs = GameSpace()
 	lc = LoopingCall(gs.game_loop)
