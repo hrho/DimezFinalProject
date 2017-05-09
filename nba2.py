@@ -19,7 +19,7 @@ from twisted.internet.task import LoopingCall
 SERVER_HOST = 'ash.campus.nd.edu'
 SERVER_PORT = 40053
 
-
+#hello
 class GameSpace:
 	def __init__(self):
 		pygame.init()

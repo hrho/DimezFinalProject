@@ -25,7 +25,7 @@ jersey = dict([
 	('hand_image', "crying_jordan.png"),
 	('angle_offset', 0),
 	('bullet_offset', 10),
-	('bullet_image', "tears.png"),
+	('bullet_image', "L.png"),
 	('player_start', [300, 400]),
 	('max_player_left', 50),
 	('max_player_right', 600),
@@ -54,7 +54,7 @@ wizards = dict([
 ])
 
 warriors = dict([
-	("player_image", "brey.png"),
+	("player_image", "jlin.png"),
 	("background_image", "blank.png"),
 	("box_image", "blank.png"),
 	("ball_image", "bball.png"),
@@ -73,5 +73,5 @@ warriors = dict([
 ])
 
 
-
+#hello
 backgrounds = [chicago, jersey, wizards, warriors]
